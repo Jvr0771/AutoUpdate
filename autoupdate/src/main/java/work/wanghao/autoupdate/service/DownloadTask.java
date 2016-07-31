@@ -13,7 +13,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import work.wanghao.autoupdate.callback.DownloadProgressCallback;
 import work.wanghao.autoupdate.callback.DownloadTaskCanceledCallback;
-import work.wanghao.autoupdate.utils.LogUtils;
 
 /**
  * Create on: 2016-07-30
@@ -64,41 +63,17 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
       throw new IllegalArgumentException("dirPath must be a dir path");
     }
     storePath = dirPath.getAbsolutePath();
-
-    /*
-    if (dirPath.exists()) {
-      String path =
-          dirPath.getPath().substring(0, dirPath.getPath().length() - dirPath.getName().length());
-      LogUtils.d(this, path);
-      String name = dirPath.getName().substring(0, dirPath.getName().length() - 4);
-      LogUtils.d(this, name);
-      StringBuilder stringBuilder = new StringBuilder(name);
-      for (int i = 1; ; i++) {
-        LogUtils.d(this, "循环次数:" + i);
-        if (!new File(path + stringBuilder.insert(stringBuilder.length(), i) + ".apk").exists()) {
-          dirPath = new File(path + stringBuilder.toString() + ".apk");
-          LogUtils.d(this, dirPath.getAbsolutePath());
-          break;
-        }
-      }
-    }*/
     this.storePath = dirPath.getAbsolutePath();
-  }
-
-  @Override protected void onPreExecute() {
-    super.onPreExecute();
   }
 
   @Override protected void onPostExecute(Exception aVoid) {
     super.onPostExecute(aVoid);
     if (aVoid == null) {
-      LogUtils.d(this, "下载完成");
       if (mProgressCallback != null && currentDownloadCompleted != null) {
         mProgressCallback.downloadCompleted(currentDownloadCompleted);
         currentDownloadCompleted = null;
       }
     } else {
-      LogUtils.e(this, "下载失败:" + aVoid.getMessage());
       if (mProgressCallback != null) mProgressCallback.downloadFail(aVoid);
     }
   }
@@ -118,26 +93,23 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
   }
 
   private Exception initDownloadPath() {
-    LogUtils.d(this, "开始初始化下载文件的保存全路径");
     File downloadDir = new File(storePath);
-    if (!downloadDir.exists()) {//简单
-      if (downloadDir.mkdir()) {//确定文件名
+    if (!downloadDir.exists()) {
+      if (downloadDir.mkdir()) {
         return downloadFile(netUrl, storePath + File.separator + UPDATE_FILE_NAME);
       } else {
         return new IllegalArgumentException("创建目录失败");
       }
     } else {
-      if (downloadDir.isDirectory()) {//确定文件名
+      if (downloadDir.isDirectory()) {
         int i;
         for (i = 1; ; i++) {
           if (!new File(storePath + File.separator + "update" + i + ".apk").exists()) {
             break;
           }
         }
-        LogUtils.d(this, "确定的下载路径为:" + storePath + File.separator + "update" + i + ".apk");
         return downloadFile(netUrl, storePath + File.separator + "update" + i + ".apk");
       } else {
-        LogUtils.e(this, "日狗了，居然不是目录");
         if (downloadDir.mkdir()) {//确定文件名
           return downloadFile(netUrl, storePath + File.separator + UPDATE_FILE_NAME);
         } else {
@@ -152,7 +124,6 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
    * @param storePath 保存路径
    */
   private Exception downloadFile(String netPath, String storePath) {
-    LogUtils.d(this, "开始下载文件，网络地址:" + netPath + "\n" + "本地路径:" + storePath);
     Exception exception = null;
     File file = new File(storePath);
     currentDownloadCompleted = file;
@@ -162,7 +133,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
       Request request = new Request.Builder().url(netPath).build();
       Call call = mOkHttpClient.newCall(request);
       Response response = call.execute();
-      if (response.isSuccessful()) {//执行下载操作
+      if (response.isSuccessful()) {
         ResponseBody responseBody = response.body();
         inputStream = responseBody.byteStream();
         outputStream = new FileOutputStream(file);
@@ -188,7 +159,6 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
           }
         }
       } else {
-        LogUtils.e(this, "请求下载失败,错误码:" + response.code());
         deleteFileWhenFail(file);
         currentDownloadCompleted = null;
         exception = new IllegalArgumentException("文件下载失败");
@@ -197,9 +167,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
       exception = ioException;
       deleteFileWhenFail(file);
       currentDownloadCompleted = null;
-      LogUtils.e(this, "写入文件发生错误:" + ioException.getMessage());
     } finally {
-      LogUtils.d(this, "关闭IO");
       CloseQuietly(inputStream, outputStream);
     }
     return exception;
@@ -222,7 +190,7 @@ public class DownloadTask extends AsyncTask<Void, Void, Exception> {
         if (closeable1 != null) closeable1.close();
       }
     } catch (IOException io) {
-      LogUtils.e(this, "关闭文件发生错误：" + io.getMessage());
+      io.printStackTrace();
     }
   }
 }

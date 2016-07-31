@@ -29,7 +29,6 @@ import work.wanghao.autoupdate.bean.PackageInfo;
 import work.wanghao.autoupdate.callback.DownloadProgressCallback;
 import work.wanghao.autoupdate.callback.DownloadTaskCanceledCallback;
 import work.wanghao.autoupdate.utils.CommonUtils;
-import work.wanghao.autoupdate.utils.LogUtils;
 import work.wanghao.autoupdate.utils.NetUtils;
 import work.wanghao.autoupdate.utils.PackageUtils;
 
@@ -39,21 +38,22 @@ import work.wanghao.autoupdate.utils.PackageUtils;
  * Summary: TODO
  */
 public abstract class BaseUpdateService extends Service implements DownloadProgressCallback {
+  private final static int THREAD_KEEP_ALIVE_TIME = 1;
+  private final static int NOTIFICATION_ID = 20169394;
+  private final static String DIR_NAME = "update";
 
   private DownloadTask mDownloadTask;
+  private String DOWNLOAD_DIR;
 
   private NotificationCompat.Builder mBuilder;
   private NotificationManager mNotificationManager;
-  private final static int NOTIFICATION_ID = 20169394;
-  private String DOWNLOAD_DIR;
-  private final static String DIR_NAME = "update";
+  private ConnectivityManager mConnectivityManager;
+  private ThreadPoolExecutor mPoolExecutor;
+
   private PackageInfo mDirCacheLastPackInfo;
 
-  private ThreadPoolExecutor mPoolExecutor;
   private int NUMBER_OF_CORES;
-  private final static int THREAD_KEEP_ALIVE_TIME = 1;
 
-  private ConnectivityManager mConnectivityManager;
   private boolean downloadAllNetStatus;
 
   @Override public final void onCreate() {
@@ -130,12 +130,12 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
       final File file = new File(DOWNLOAD_DIR);
       if (!file.exists()) {
         if (!file.mkdir()) {
-          LogUtils.e(this, "创建目录失败！创建路径:" + file.getAbsolutePath());
+          /*todo*/
         } else {
-          LogUtils.d(this, "创建目录成功，创建路径:" + file.getAbsolutePath());
+          /*todo*/
         }
       } else {
-        /*todo:执行遍历目录下安装包操作*/
+
         mPoolExecutor.execute(new Runnable() {
           @Override public void run() {
             listDownloadDirApkTask(file.getAbsolutePath());
@@ -143,7 +143,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
         });
       }
     } else {
-      LogUtils.e(this, "初始化下载目录出错，少数机型");
+      /*todo*/
     }
   }
 
@@ -210,10 +210,10 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
           }
         }
       } else {
-        LogUtils.d(this, "目录中没有文件，遍历结束");
+        /*todo*/
       }
     } else {
-      LogUtils.d(this, "遍历的目录不存在~");
+      /*todo*/
     }
   }
 
@@ -268,7 +268,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
       }
 
       @Override public void onFail(Exception e) {
-        LogUtils.e(this, "FIR 获取更新失败，因为:" + e.getMessage() + "\n正在重试");
+        e.printStackTrace();
         /*todo*/
         setupFir(intent);
       }
@@ -305,7 +305,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
 
   private void showNewVersion(FirVersionInfo info) {
     final Dialog dialog = setDialogContent(info);
-    if (dialog == null) throw new NullPointerException("Dialog 不能为空啊！");
+    if (dialog == null) throw new NullPointerException("Dialog Must Not be NULL!");
     if (Build.VERSION.SDK_INT >= 19) {
       dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
     } else {
@@ -323,7 +323,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
     } else if (dialogInterface != null) {
       dialogInterface.dismiss();
     } else {
-      throw new IllegalArgumentException("dialog 和 dialogInterface 不能同时为空!");
+      throw new IllegalArgumentException("dialog and dialogInterface Not be NULL both!");
     }
     PackageUtils.installAPK(this, file);
     stopSelf();
@@ -335,7 +335,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
     } else if (dialogInterface != null) {
       dialogInterface.dismiss();
     } else {
-      throw new IllegalArgumentException("dialog 和 dialogInterface 不能同时为空!");
+      throw new IllegalArgumentException("dialog and dialogInterface Not be NULL both!");
     }
     stopSelf();
   }
@@ -349,7 +349,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
     } else if (dialogInterface != null) {
       dialogInterface.dismiss();
     } else {
-      throw new IllegalArgumentException("dialog 和 dialogInterface 不能同时为空!");
+      throw new IllegalArgumentException("dialog and dialogInterface Not be NULL both!");
     }
     if (mDownloadTask == null) {
       mDownloadTask = new DownloadTask(getOkHttpClient(), info.downloadUrl, DOWNLOAD_DIR);
@@ -386,7 +386,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
       dialogInterface.dismiss();
       stopSelf();
     } else {
-      throw new IllegalArgumentException("dialog 和 dialogInterface 不能同时为空!");
+      throw new IllegalArgumentException("dialog and dialogInterface Not be NULL both!");
     }
   }
 }
