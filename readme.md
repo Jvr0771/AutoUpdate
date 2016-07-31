@@ -47,7 +47,7 @@ allprojects {
  - 在Activity或者Fragment中你想要自动更新的地方调用以下代码即可完成检测自动更新:
  
  ```java
- UpdateManager.checkUpdate(MainActivity.this);
+ UpdateManager.checkUpdate(this);
  ```
  
  同时，请在`AndroidManifest.xml`文件中声明以下meta信息:
@@ -64,7 +64,7 @@ allprojects {
  如果你觉得这种方式麻烦，也可以使用以下重载方法，其中`apiToken`即为你的Fir Api Token
  
  ```java
-  UpdateManager.checkUpdate(MainActivity.this,apiToken);
+  UpdateManager.checkUpdate(this,apiToken);
  ```
  
  #### 自定义
