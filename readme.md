@@ -31,7 +31,7 @@ allprojects {
 ```gradle
   compile 'im.fir:fir-sdk:latest.integration@aar'
   compile 'com.squareup.okhttp3:okhttp:3.4.1'
-  compile 'com.github.Doublemine:AutoUpdate:0.1.0_apha'
+  compile 'com.github.Doublemine:AutoUpdate:0.1.0_beta1'
 ```
 
 注意`com.github.Doublemine:AutoUpdate:0.1.0_apha`的版本，当前最新的版本为: [![](https://jitpack.io/v/Doublemine/AutoUpdate.svg)](https://jitpack.io/#Doublemine/AutoUpdate)
