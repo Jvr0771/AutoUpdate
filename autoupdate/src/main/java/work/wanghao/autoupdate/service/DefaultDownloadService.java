@@ -3,6 +3,7 @@ package work.wanghao.autoupdate.service;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import java.io.File;
 import work.wanghao.autoupdate.R;
 import work.wanghao.autoupdate.bean.FirVersionInfo;
@@ -22,25 +23,11 @@ public class DefaultDownloadService extends BaseUpdateService {
       @Override public void onClick(DialogInterface dialogInterface, int i) {
         onCancelInstallClick(null, dialogInterface);
       }
-    })
-        .setPositiveButton("安装", new DialogInterface.OnClickListener() {
-          @Override public void onClick(DialogInterface dialogInterface, int i) {
-            onInstallClick(null, dialogInterface, new File(installApkPath));
-          }
-        })
-        .setTitle(info.appName + "发现新版本")
-        .setMessage("发现新版本已为您下载完毕，是否安装?\n更新日期:"
-            + info.updateDate
-            + "\n"
-            + "更新日志:"
-            + info.changeLog
-            + "\n"
-            + "版本号:"
-            + info.versionName
-            + "\nBuild:"
-            + info.versionCode
-            + "\n安装包大小:"
-            + CommonUtils.bytes2kb(info.fileSize));
+    }).setPositiveButton("安装", new DialogInterface.OnClickListener() {
+      @Override public void onClick(DialogInterface dialogInterface, int i) {
+        onInstallClick(null, dialogInterface, new File(installApkPath));
+      }
+    }).setTitle(info.appName).setIcon(getApplicationInfo().icon).setMessage("已为您准备好新的版本,立刻安装?");
 
     return builder.create();
   }
@@ -59,15 +46,16 @@ public class DefaultDownloadService extends BaseUpdateService {
           }
         })
         .setTitle(info.appName + "发现新版本")
+        .setIcon(getApplicationInfo().icon)
         .setMessage("更新日期:"
             + info.updateDate
             + "\n"
-            + "更新日志:"
+            + "更新日志:\n"
             + info.changeLog
             + "\n"
-            + "版本号:"
+            + "版本: v"
             + info.versionName
-            + "\nBuild:"
+            + "."
             + info.versionCode
             + "\n安装包大小:"
             + CommonUtils.bytes2kb(info.fileSize));
