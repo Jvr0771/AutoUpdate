@@ -38,11 +38,8 @@ allprojects {
 
 ##### 3.代码中使用
 
- - 如果你的项目要兼容Android SDK 23+ 请在调用检测更新之前自行解决运行时权限的问题，本封装需要以下运行时权限来保证正常运行:
+ - 本封装下载的更新文件位于SDCard上的应用缓存文件夹中,因此在Android SDK 23+以上你`不需要`额外的添加运行时权限来保证它的正常运行:
 
-```xml
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-```
 
  - 在Activity或者Fragment中你想要自动更新的地方调用以下代码即可完成检测自动更新:
  
