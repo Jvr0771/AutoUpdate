@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.WindowManager;
 import im.fir.sdk.FIR;
 import im.fir.sdk.VersionCheckCallback;
@@ -144,6 +145,7 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
       }
     } else {
       /*todo*/
+      stopSelf();
     }
   }
 
@@ -297,6 +299,10 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
           if (tempFile.exists()) tempFile.delete();
           showNewVersion(info);
         }
+      } else {
+        File tempFile = new File(mDirCacheLastPackInfo.path);
+        if (tempFile.exists()) tempFile.delete();
+        showNewVersion(info);
       }
     } else {
       PackageInfo current = PackageUtils.getPackageInfo(this);
