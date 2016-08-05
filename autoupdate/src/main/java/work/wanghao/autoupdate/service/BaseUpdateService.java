@@ -308,9 +308,6 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
       PackageInfo current = PackageUtils.getPackageInfo(this);
       if (current.versionCode < Integer.parseInt(info.versionCode)) {
         showNewVersion(info);
-      } else if (current.versionCode == Integer.parseInt(info.versionCode)
-          && !current.packageName.equals(info.versionName)) {
-        showNewVersion(info);
       } else {
         stopSelf();
       }
