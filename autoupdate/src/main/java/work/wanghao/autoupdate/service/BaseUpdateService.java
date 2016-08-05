@@ -297,12 +297,22 @@ public abstract class BaseUpdateService extends Service implements DownloadProgr
         } else {
           File tempFile = new File(mDirCacheLastPackInfo.path);
           if (tempFile.exists()) tempFile.delete();
-          showNewVersion(info);
+          PackageInfo current = PackageUtils.getPackageInfo(this);
+          if (current.versionCode < Integer.parseInt(info.versionCode)) {
+            showNewVersion(info);
+          } else {
+            stopSelf();
+          }
         }
       } else {
         File tempFile = new File(mDirCacheLastPackInfo.path);
         if (tempFile.exists()) tempFile.delete();
-        showNewVersion(info);
+        PackageInfo current = PackageUtils.getPackageInfo(this);
+        if (current.versionCode < Integer.parseInt(info.versionCode)) {
+          showNewVersion(info);
+        } else {
+          stopSelf();
+        }
       }
     } else {
       PackageInfo current = PackageUtils.getPackageInfo(this);
